@@ -13,30 +13,38 @@
                 <label for="shift">Shift:</label>
                 <input type="number" id="shift" min="1" max="25" value="3" />
                 <br />
-                <label for="inputText">Input Text:</label>
-                <textarea id="inputText" rows="4"></textarea>
+                <label for="inputCaesar">Input Text:</label>
+                <textarea id="inputCaesar" rows="4"></textarea>
                 <br />
                 <button onclick="encryptCaesar()">Encrypt</button>
                 <button onclick="decryptCaesar()">Decrypt</button>
-                <label for="outputText">Output Text:</label>
-                <span class="outputText"></span>
+                <label for="outputCaesar">Output Text:</label>
+                <span id="outputCaesar"></span>
                 <br />
             </div>
 
             <div class="card">
-                <h1 class="title">Algortima</h1>
-                <button onclick="encrypt()">Encrypt</button>
-                <button onclick="decrypt()">Decrypt</button>
+                <h1 class="title">Rail Fence Cipher</h1>
+                <label for="rails">Rails:</label>
+                <input type="number" id="rails" min="1" max="25" value="3" />
+                <br />
+                <label for="inputRail">Input Text:</label>
+                <textarea id="inputRail" rows="4"></textarea>
+                <br />
+                <button onclick="encryptRail()">Encrypt</button>
+                <button onclick="decryptRail()">Decrypt</button>
+                <label for="outputRail">Output Text:</label>
+                <span id="outputRail"></span>
             </div>
             <div class="card">
-                <h1 class="title">Algortima</h1>
+                <h1 class="title">Cipher</h1>
                 <button onclick="encrypt()">Encrypt</button>
                 <button onclick="decrypt()">Decrypt</button>
             </div>
             <div class="card">
                 <h1 class="title">Super Encryption</h1>
-                <button onclick="encrypt()">Encrypt</button>
-                <button onclick="decrypt()">Decrypt</button>
+                <button onclick="encryptSuper()">Encrypt</button>
+                <button onclick="decryptSuper()">Decrypt</button>
             </div>
         </div>
 
