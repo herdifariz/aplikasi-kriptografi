@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kriptografi</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <h1 class="title">Caesar Cipher</h1>
+                <label for="shift">Shift:</label>
+                <input type="number" id="shift" min="1" max="25" value="3" />
+                <br />
+                <label for="inputText">Input Text:</label>
+                <textarea id="inputText" rows="4"></textarea>
+                <br />
+                <label for="outputText">Output Text:</label>
+                <span class="outputText"></span>
+                <br />
+                <button onclick="encryptCaesar()">Encrypt</button>
+                <button onclick="decryptCaesar()">Decrypt</button>
+            </div>
+
+            <div class="card">
+                <h1 class="title">Algortima</h1>
+                <button onclick="encrypt()">Encrypt</button>
+                <button onclick="decrypt()">Decrypt</button>
+            </div>
+            <div class="card">
+                <h1 class="title">Algortima</h1>
+                <button onclick="encrypt()">Encrypt</button>
+                <button onclick="decrypt()">Decrypt</button>
+            </div>
+            <div class="card">
+                <h1 class="title">Super Encryption</h1>
+                <button onclick="encrypt()">Encrypt</button>
+                <button onclick="decrypt()">Decrypt</button>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
