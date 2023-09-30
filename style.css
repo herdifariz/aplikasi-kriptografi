@@ -6,6 +6,7 @@ body {
 
 .card {
     max-width: 600px;
+    min-height: 80vh;
     margin: 50px auto;
     padding: 20px;
     background-color: #fff;
@@ -15,7 +16,7 @@ body {
 
 label {
     display: block;
-    margin-bottom: 5px;
+    margin: 10px 0;
 }
 
 textarea {
@@ -26,7 +27,7 @@ textarea {
 }
 
 button {
-    margin-top: 20px;
+    margin: 20px 0;
     padding: 10px;
     background-color: #4caf50;
     color: #fff;
