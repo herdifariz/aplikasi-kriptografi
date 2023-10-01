@@ -33,7 +33,15 @@ function encryptScytale() {
     const inputScytale = document.getElementById("inputScytale").value;
     const outputScytale = document.getElementById("outputScytale");
 
-    outputScytale.innerText = vigenereEncrypt(inputScytale, key);
+    outputScytale.innerText = scytaleEncrypt(inputScytale, key);
+}
+
+function decryptScytale() {
+    const key = document.getElementById("key").value;
+    const inputScytale = document.getElementById("inputScytale").value;
+    const outputScytale = document.getElementById("outputScytale");
+
+    outputScytale.innerText = scytaleDecrypt(inputScytale, key);
 }
 
 function caesarCipher(str, shift) {
@@ -150,4 +158,47 @@ function railFenceDecrypt(cipher, key) {
     }
 
     return result;
+}
+
+function scytaleEncrypt(plaintext, diameter) {
+    if (diameter <= 0 || diameter > plaintext.length) {
+        console.error("Invalid diameter");
+        return "";
+    }
+
+    plaintext = plaintext.split(" ").join("");
+
+    let ciphertext = "";
+    for (let col = 0; col < diameter; col++) {
+        for (let row = 0; row < Math.ceil(plaintext.length / diameter); row++) {
+            const index = col + row * diameter;
+            if (index < plaintext.length) {
+                ciphertext += plaintext[index];
+            }
+        }
+    }
+
+    return ciphertext;
+}
+
+function scytaleDecrypt(ciphertext, diameter) {
+    // Validasi diameter agar tidak melebihi panjang teks
+    if (diameter <= 0 || diameter > ciphertext.length) {
+        console.error("Invalid diameter");
+        return "";
+    }
+
+    ciphertext = ciphertext.split(" ").join("");
+
+    let plaintext = "";
+    for (let row = 0; row < Math.ceil(ciphertext.length / diameter); row++) {
+        for (let col = 0; col < diameter; col++) {
+            const index = row + col * Math.ceil(ciphertext.length / diameter);
+            if (index < ciphertext.length) {
+                plaintext += ciphertext[index];
+            }
+        }
+    }
+
+    return plaintext;
 }
