@@ -12,6 +12,33 @@ function decryptCaesar() {
     outputCaesar.innerText = caesarCipher(inputCaesar, -shift);
 }
 
+function encryptRail() {
+    const key = parseInt(document.getElementById("rails").value);
+    const inputRail = document.getElementById("inputRail").value;
+    const outputRail = document.getElementById("outputRail");
+
+    outputRail.innerText = railFenceEncrypt(inputRail, key);
+}
+
+function decryptRail() {
+    const key = parseInt(document.getElementById("rails").value);
+    const inputRail = document.getElementById("inputRail").value;
+    const outputRail = document.getElementById("outputRail");
+
+    outputRail.innerText = railFenceDecrypt(inputRail, key);
+}
+
+function encryptVigenere() {
+    const keyword = document.getElementById("keyword").value;
+    const inputVigenere = document.getElementById("inputVigenere").value;
+    const outputVigenere = document.getElementById("outputVigenere");
+
+    key = generateKeyVigenere(inputVigenere, keyword);
+    console.log(inputVigenere);
+    console.log(key);
+    outputVigenere.innerText = vigenereEncrypt(inputVigenere, key);
+}
+
 function caesarCipher(str, shift) {
     // Make an output variable
     let output = "";
@@ -41,11 +68,8 @@ function caesarCipher(str, shift) {
     return output;
 }
 
-function encryptRail() {
-    const key = parseInt(document.getElementById("rails").value);
-    const inputRail = document.getElementById("inputRail").value;
-    const outputRail = document.getElementById("outputRail");
-
+function railFenceEncrypt(inputRail, key) {
+    // remove space
     let text = inputRail.split(" ").join("");
 
     // create the matrix to cipher plain text
@@ -53,8 +77,6 @@ function encryptRail() {
     let rail = new Array(key)
         .fill()
         .map(() => new Array(text.length).fill("\n"));
-
-    console.log(rail);
 
     // filling the rail matrix to distinguish filled
     // spaces from blank ones
@@ -81,14 +103,10 @@ function encryptRail() {
         for (let j = 0; j < text.length; j++)
             if (rail[i][j] != "\n") result += rail[i][j];
 
-    outputRail.innerText = result;
+    return result;
 }
 
-function decryptRail() {
-    const key = parseInt(document.getElementById("rails").value);
-    const cipher = document.getElementById("inputRail").value;
-    const outputRail = document.getElementById("outputRail");
-
+function railFenceDecrypt(cipher, key) {
     // create the matrix to cipher plain text
     // key = rows , text.length = columns
     let rail = new Array(key)
@@ -133,5 +151,44 @@ function decryptRail() {
         // find the next row using direction flag
         dir_down ? row++ : row--;
     }
-    outputRail.innerText = result;
+
+    return result;
+}
+
+function generateKeyVigenere(str, key) {
+    if (str.length == key.length) return key;
+    else {
+        let newKey = "";
+        keyIndex = 0;
+        for (let i = 0; i < str.length; i++) {
+            if (str[i] === " ") {
+                newKey += " ";
+            } else {
+                newKey += key[keyIndex];
+                if (keyIndex === key.length - 1) {
+                    keyIndex = 0;
+                } else {
+                    keyIndex++;
+                }
+            }
+        }
+
+        return newKey;
+    }
+}
+
+function vigenereEncrypt(str, key) {
+    let cipher_text = "";
+    str.toLowerCase();
+
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === " ") {
+            cipher_text += " ";
+        } else {
+            cipher_text += String.fromCharCode(
+                ((str.charCodeAt(i) - 64 + key.charCodeAt(i)) % 26) + 97
+            );
+        }
+    }
+    return cipher_text;
 }
