@@ -12,57 +12,56 @@
                 <h1 class="title">Caesar Cipher</h1>
                 <label for="shift">Shift:</label>
                 <input type="number" id="shift" min="1" max="25" value="3" />
-                <br />
+
                 <label for="inputCaesar">Input Text:</label>
                 <textarea id="inputCaesar" rows="4"></textarea>
-                <br />
+
                 <button onclick="encryptCaesar()">Encrypt</button>
                 <button onclick="decryptCaesar()">Decrypt</button>
                 <label for="outputCaesar">Output Text:</label>
                 <span id="outputCaesar"></span>
-                <br />
             </div>
 
             <div class="card">
                 <h1 class="title">Rail Fence Cipher</h1>
                 <label for="rails">Key:</label>
                 <input type="number" id="rails" min="1" max="25" value="3" />
-                <br />
+
                 <label for="inputRail">Input Text:</label>
                 <textarea id="inputRail" rows="4"></textarea>
-                <br />
+
                 <button onclick="encryptRail()">Encrypt</button>
                 <button onclick="decryptRail()">Decrypt</button>
                 <label for="outputRail">Output Text:</label>
                 <span id="outputRail"></span>
             </div>
             <div class="card">
-                <h1 class="title">Vigenère Cipher</h1>
-                <label for="keyword">Keyword:</label>
-                <input type="text" id="keyword" value="key" />
-                <br />
-                <label for="inputVigenere">Input Text:</label>
-                <textarea id="inputVigenere" rows="4"></textarea>
-                <br />
-                <button onclick="encryptVigenere()">Encrypt</button>
-                <button onclick="decryptVigenere()">Decrypt</button>
-                <label for="outputVigenere">Output Text:</label>
-                <span id="outputVigenere"></span>
+                <h1 class="title">Scytale Cipher</h1>
+                <label for="key">Keyword:</label>
+                <input type="number" id="key" min="1" max="25" value="3" />
+
+                <label for="inputScytale">Input Text:</label>
+                <textarea id="inputScytale" rows="4"></textarea>
+
+                <button onclick="encryptScytale()">Encrypt</button>
+                <button onclick="decryptScytale()">Decrypt</button>
+                <label for="outputScytale">Output Text:</label>
+                <span id="outputScytale"></span>
             </div>
             <div class="card">
                 <h1 class="title">Super Encryption</h1>
                 <label for="shift">Caesar Shift:</label>
                 <input type="number" id="shift" min="1" max="25" value="3" />
-                <!-- <br /> -->
+
                 <label for="rails">Rail Key:</label>
                 <input type="number" id="rails" min="1" max="25" value="3" />
-                <!-- <br /> -->
+
                 <label for="keyword">Vigenere Keyword:</label>
                 <input type="text" id="keyword" value="key" />
-                <br />
+
                 <label for="inputVigenere">Input Text:</label>
                 <textarea id="inputVigenere" rows="4"></textarea>
-                <br />
+
                 <button onclick="encryptSuper()">Encrypt</button>
                 <button onclick="decryptSuper()">Decrypt</button>
                 <label for="outputVigenere">Output Text:</label>

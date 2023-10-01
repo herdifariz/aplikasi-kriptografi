@@ -13,30 +13,27 @@ function decryptCaesar() {
 }
 
 function encryptRail() {
-    const key = parseInt(document.getElementById("rails").value);
+    const rail = parseInt(document.getElementById("rails").value);
     const inputRail = document.getElementById("inputRail").value;
     const outputRail = document.getElementById("outputRail");
 
-    outputRail.innerText = railFenceEncrypt(inputRail, key);
+    outputRail.innerText = railFenceEncrypt(inputRail, rail);
 }
 
 function decryptRail() {
-    const key = parseInt(document.getElementById("rails").value);
+    const rail = parseInt(document.getElementById("rails").value);
     const inputRail = document.getElementById("inputRail").value;
     const outputRail = document.getElementById("outputRail");
 
-    outputRail.innerText = railFenceDecrypt(inputRail, key);
+    outputRail.innerText = railFenceDecrypt(inputRail, rail);
 }
 
-function encryptVigenere() {
-    const keyword = document.getElementById("keyword").value;
-    const inputVigenere = document.getElementById("inputVigenere").value;
-    const outputVigenere = document.getElementById("outputVigenere");
+function encryptScytale() {
+    const key = document.getElementById("key").value;
+    const inputScytale = document.getElementById("inputScytale").value;
+    const outputScytale = document.getElementById("outputScytale");
 
-    key = generateKeyVigenere(inputVigenere, keyword);
-    console.log(inputVigenere);
-    console.log(key);
-    outputVigenere.innerText = vigenereEncrypt(inputVigenere, key);
+    outputScytale.innerText = vigenereEncrypt(inputScytale, key);
 }
 
 function caesarCipher(str, shift) {
@@ -153,42 +150,4 @@ function railFenceDecrypt(cipher, key) {
     }
 
     return result;
-}
-
-function generateKeyVigenere(str, key) {
-    if (str.length == key.length) return key;
-    else {
-        let newKey = "";
-        keyIndex = 0;
-        for (let i = 0; i < str.length; i++) {
-            if (str[i] === " ") {
-                newKey += " ";
-            } else {
-                newKey += key[keyIndex];
-                if (keyIndex === key.length - 1) {
-                    keyIndex = 0;
-                } else {
-                    keyIndex++;
-                }
-            }
-        }
-
-        return newKey;
-    }
-}
-
-function vigenereEncrypt(str, key) {
-    let cipher_text = "";
-    str.toLowerCase();
-
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === " ") {
-            cipher_text += " ";
-        } else {
-            cipher_text += String.fromCharCode(
-                ((str.charCodeAt(i) - 64 + key.charCodeAt(i)) % 26) + 97
-            );
-        }
-    }
-    return cipher_text;
 }
