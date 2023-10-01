@@ -12,6 +12,22 @@ function decryptCaesar() {
     outputCaesar.innerText = caesarCipher(inputCaesar, -shift);
 }
 
+function encryptScytale() {
+    const key = document.getElementById("key").value;
+    const inputScytale = document.getElementById("inputScytale").value;
+    const outputScytale = document.getElementById("outputScytale");
+
+    outputScytale.innerText = scytaleEncrypt(inputScytale, key);
+}
+
+function decryptScytale() {
+    const key = document.getElementById("key").value;
+    const inputScytale = document.getElementById("inputScytale").value;
+    const outputScytale = document.getElementById("outputScytale");
+
+    outputScytale.innerText = scytaleDecrypt(inputScytale, key);
+}
+
 function encryptRail() {
     const rail = parseInt(document.getElementById("rails").value);
     const inputRail = document.getElementById("inputRail").value;
@@ -28,20 +44,35 @@ function decryptRail() {
     outputRail.innerText = railFenceDecrypt(inputRail, rail);
 }
 
-function encryptScytale() {
-    const key = document.getElementById("key").value;
-    const inputScytale = document.getElementById("inputScytale").value;
-    const outputScytale = document.getElementById("outputScytale");
+function encryptSuper() {
+    const shiftSuper = parseInt(document.getElementById("shiftSuper").value);
+    const railSuper = parseInt(document.getElementById("railSuper").value);
+    const keySuper = parseInt(document.getElementById("keySuper").value);
+    const inputSuper = document.getElementById("inputSuper").value;
+    const outputSuper = document.getElementById("outputSuper");
+    // console.log(document.getElementById("inputSuper").value);
 
-    outputScytale.innerText = scytaleEncrypt(inputScytale, key);
+    outputSuper.innerText = superEncrypt(
+        inputSuper,
+        shiftSuper,
+        railSuper,
+        keySuper
+    );
 }
 
-function decryptScytale() {
-    const key = document.getElementById("key").value;
-    const inputScytale = document.getElementById("inputScytale").value;
-    const outputScytale = document.getElementById("outputScytale");
+function decryptSuper() {
+    const shiftSuper = parseInt(document.getElementById("shiftSuper").value);
+    const railSuper = parseInt(document.getElementById("railSuper").value);
+    const keySuper = parseInt(document.getElementById("keySuper").value);
+    const inputSuper = document.getElementById("inputSuper").value;
+    const outputSuper = document.getElementById("outputSuper");
 
-    outputScytale.innerText = scytaleDecrypt(inputScytale, key);
+    outputSuper.innerText = superDecrypt(
+        inputSuper,
+        shiftSuper,
+        railSuper,
+        keySuper
+    );
 }
 
 function caesarCipher(str, shift) {
@@ -71,6 +102,91 @@ function caesarCipher(str, shift) {
 
     // Done
     return output;
+}
+
+function scytaleEncrypt(plaintext, key) {
+    if (key <= 0 || key > plaintext.length) {
+        console.error("Invalid key");
+        return "";
+    }
+
+    plaintext = plaintext.split(" ").join("");
+
+    let tabel = new Array(Math.ceil(plaintext.length / key))
+        .fill(null)
+        .map(() => new Array(key).fill(0));
+
+    let textLengthCounter = 0;
+
+    for (let i = 0; i < Math.ceil(plaintext.length / key); i++) {
+        for (let j = 0; j < key; j++) {
+            if (textLengthCounter === plaintext.length) {
+                tabel[i][j] = "Z";
+            } else {
+                tabel[i][j] = plaintext.charAt(textLengthCounter);
+                textLengthCounter++;
+            }
+        }
+    }
+
+    textLengthCounter = 0;
+    let ciphertext = "";
+
+    for (let i = 0; i < key; i++) {
+        for (let j = 0; j < Math.ceil(plaintext.length / key); j++) {
+            if (tabel[j][i] === 0) {
+                continue;
+            }
+            ciphertext += tabel[j][i];
+        }
+    }
+
+    return ciphertext;
+}
+
+function scytaleDecrypt(cipherText, key) {
+    // Validasi key agar tidak melebihi panjang teks
+    if (key <= 0 || key > cipherText.length) {
+        console.error("Invalid key");
+        return "";
+    }
+
+    cipherText = cipherText.split(" ").join("");
+
+    let tabel = new Array(Math.ceil(cipherText.length / key))
+        .fill(null)
+        .map(() => new Array(key));
+
+    let textLengthCounter = 0;
+
+    for (let i = 0; i < key; i++) {
+        for (let j = 0; j < Math.ceil(cipherText.length / key); j++) {
+            tabel[j][i] = cipherText.charAt(textLengthCounter);
+            textLengthCounter++;
+            if (textLengthCounter >= cipherText.length) {
+                break;
+            }
+        }
+    }
+
+    textLengthCounter = 0;
+    let plainText = "";
+
+    for (let i = 0; i < Math.ceil(cipherText.length / key); i++) {
+        for (let j = 0; j < key; j++) {
+            plainText += tabel[i][j];
+            textLengthCounter++;
+        }
+    }
+
+    let plain = "";
+    for (let i = 0; i < plainText.length; i++) {
+        if (plainText[i] !== "Z") {
+            plain += plainText[i];
+        }
+    }
+
+    return plain;
 }
 
 function railFenceEncrypt(inputRail, key) {
@@ -112,93 +228,101 @@ function railFenceEncrypt(inputRail, key) {
 }
 
 function railFenceDecrypt(cipher, key) {
-    // create the matrix to cipher plain text
-    // key = rows , text.length = columns
+    // create the matrix to cipher plain text key = rows , length(text) = columns
+    // filling the rail matrix to distinguish filled spaces from blank ones
     let rail = new Array(key)
-        .fill()
+        .fill(null)
         .map(() => new Array(cipher.length).fill("\n"));
 
-    // filling the rail matrix to mark the places with '*'
-    let dir_down = false;
+    // to find the direction
+    let dir_down = null;
     let row = 0,
         col = 0;
 
+    // mark the places with '*'
     for (let i = 0; i < cipher.length; i++) {
-        // check the direction of flow
-        if (row == 0) dir_down = true;
-        if (row == key - 1) dir_down = false;
+        if (row === 0) {
+            dir_down = true;
+        }
+        if (row === key - 1) {
+            dir_down = false;
+        }
 
         // place the marker
-        rail[row][col++] = "*";
+        rail[row][col] = "*";
+        col++;
+
+        // console.log("After placing markers:", rail);
 
         // find the next row using direction flag
-        dir_down ? row++ : row--;
+        if (dir_down) {
+            row++;
+        } else {
+            row--;
+        }
     }
 
-    // now we can construct the rail matrix by filling the marked places with cipher text
+    // now we can construct the fill the rail matrix
     let index = 0;
-    for (let i = 0; i < key; i++)
-        for (let j = 0; j < cipher.length; j++)
-            if (rail[i][j] == "*" && index < cipher.length)
-                rail[i][j] = cipher[index++];
+    for (let i = 0; i < key; i++) {
+        for (let j = 0; j < cipher.length; j++) {
+            if (rail[i][j] === "*" && index < cipher.length) {
+                rail[i][j] = cipher[index];
+                index++;
+            }
+        }
+    }
 
     // now read the matrix in zig-zag manner to construct the resultant text
-    let result = "";
+    let result = [];
     (row = 0), (col = 0);
     for (let i = 0; i < cipher.length; i++) {
         // check the direction of flow
-        if (row == 0) dir_down = true;
-        if (row == key - 1) dir_down = false;
+        if (row === 0) {
+            dir_down = true;
+        }
+        if (row === key - 1) {
+            dir_down = false;
+        }
 
         // place the marker
-        if (rail[row][col] != "*") result += rail[row][col++];
+        if (rail[row][col] !== "*") {
+            result.push(rail[row][col]);
+            col++;
+        }
 
         // find the next row using direction flag
-        dir_down ? row++ : row--;
+        if (dir_down) {
+            row++;
+        } else {
+            row--;
+        }
     }
 
-    return result;
+    return result.join("");
 }
 
-function scytaleEncrypt(plaintext, diameter) {
-    if (diameter <= 0 || diameter > plaintext.length) {
-        console.error("Invalid diameter");
-        return "";
-    }
-
+function superEncrypt(plaintext, shift, rail, key) {
     plaintext = plaintext.split(" ").join("");
 
-    let ciphertext = "";
-    for (let col = 0; col < diameter; col++) {
-        for (let row = 0; row < Math.ceil(plaintext.length / diameter); row++) {
-            const index = col + row * diameter;
-            if (index < plaintext.length) {
-                ciphertext += plaintext[index];
-            }
-        }
-    }
-
-    return ciphertext;
+    return railFenceEncrypt(
+        scytaleEncrypt(caesarCipher(plaintext, shift), key),
+        rail
+    );
 }
 
-function scytaleDecrypt(ciphertext, diameter) {
-    // Validasi diameter agar tidak melebihi panjang teks
-    if (diameter <= 0 || diameter > ciphertext.length) {
-        console.error("Invalid diameter");
-        return "";
-    }
-
+function superDecrypt(ciphertext, shift, rail, key) {
     ciphertext = ciphertext.split(" ").join("");
 
-    let plaintext = "";
-    for (let row = 0; row < Math.ceil(ciphertext.length / diameter); row++) {
-        for (let col = 0; col < diameter; col++) {
-            const index = row + col * Math.ceil(ciphertext.length / diameter);
-            if (index < ciphertext.length) {
-                plaintext += ciphertext[index];
-            }
-        }
-    }
-
-    return plaintext;
+    // let a = railFenceDecrypt(ciphertext, rail);
+    // console.log(a);
+    // let b = scytaleDecrypt(a, key);
+    // console.log(b);
+    // let c = caesarCipher(b, -shift);
+    // console.log(c);
+    // return c;
+    return caesarCipher(
+        scytaleDecrypt(railFenceDecrypt(ciphertext, rail), key),
+        -shift
+    );
 }
