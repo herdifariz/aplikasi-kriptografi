@@ -76,27 +76,26 @@ function decryptSuper() {
 }
 
 function caesarCipher(str, shift) {
-    // Make an output variable
     let output = "";
 
-    // Go through each character
+    // Looping tiap char
     for (let i = 0; i < str.length; i++) {
-        // Get the character we'll be appending
+        // Ambil tiap char
         let c = str[i];
 
-        // If it's a letter...
+        // Jika merupakan huruf
         if (c.match(/[a-z]/i)) {
-            // Get its code
+            // Ambil code ASCII
             let code = str.charCodeAt(i);
 
-            // Check lowercase or uppercase
+            // Cek huruf kecil / besar
             const offset = c.toLowerCase() === c ? 97 : 65;
 
-            // Shifting
+            // Ubah huruf
             c = String.fromCharCode(((code - offset + shift) % 26) + offset);
         }
 
-        // Append
+        // Gabungkan
         output += c;
     }
 
@@ -178,7 +177,7 @@ function scytaleDecrypt(cipherText, key) {
             textLengthCounter++;
         }
     }
-
+    // return plainText;
     let plain = "";
     for (let i = 0; i < plainText.length; i++) {
         if (plainText[i] !== "Z") {
@@ -190,35 +189,33 @@ function scytaleDecrypt(cipherText, key) {
 }
 
 function railFenceEncrypt(inputRail, key) {
-    // remove space
+    // hapus spasi
     let text = inputRail.split(" ").join("");
 
-    // create the matrix to cipher plain text
-    // key = rows , text.length = columns
+    // Buat matrix
+    // key = baris , text.length = kolom
     let rail = new Array(key)
         .fill()
         .map(() => new Array(text.length).fill("\n"));
 
-    // filling the rail matrix to distinguish filled
-    // spaces from blank ones
+    // Isi matrix
     let dir_down = false;
     let row = 0,
         col = 0;
 
     for (let i = 0; i < text.length; i++) {
-        // check the direction of flow
-        // reverse the direction if we've just
-        // filled the top or bottom rail
+        // Cek arah ke atas/bawah
+        // Balik arah jika mencapai baris paling atas/bawah
         if (row == 0 || row == key - 1) dir_down = !dir_down;
 
-        // fill the corresponding alphabet
+        // Isi matrix sesuai huruf
         rail[row][col++] = text[i];
 
-        // find the next row using direction flag
+        // Uabh ke abris selanjutnya
         dir_down ? row++ : row--;
     }
 
-    // now we can construct the cipher using the rail matrix
+    // Pembacaan hasil matrix
     let result = "";
     for (let i = 0; i < key; i++)
         for (let j = 0; j < text.length; j++)
@@ -251,8 +248,6 @@ function railFenceDecrypt(cipher, key) {
         // place the marker
         rail[row][col] = "*";
         col++;
-
-        // console.log("After placing markers:", rail);
 
         // find the next row using direction flag
         if (dir_down) {
@@ -314,13 +309,6 @@ function superEncrypt(plaintext, shift, rail, key) {
 function superDecrypt(ciphertext, shift, rail, key) {
     ciphertext = ciphertext.split(" ").join("");
 
-    // let a = railFenceDecrypt(ciphertext, rail);
-    // console.log(a);
-    // let b = scytaleDecrypt(a, key);
-    // console.log(b);
-    // let c = caesarCipher(b, -shift);
-    // console.log(c);
-    // return c;
     return caesarCipher(
         scytaleDecrypt(railFenceDecrypt(ciphertext, rail), key),
         -shift
