@@ -84,7 +84,7 @@ function caesarCipher(str, shift) {
         let c = str[i];
 
         // Jika merupakan huruf
-        if (c.match(/[a-z]/i)) {
+        if (/[a-z]/i.test(c)) {
             // Ambil code ASCII
             let code = str.charCodeAt(i);
 
@@ -92,7 +92,9 @@ function caesarCipher(str, shift) {
             const offset = c.toLowerCase() === c ? 97 : 65;
 
             // Ubah huruf
-            c = String.fromCharCode(((code - offset + shift) % 26) + offset);
+            c = String.fromCharCode(
+                ((((code - offset + shift) % 26) + 26) % 26) + offset
+            );
         }
 
         // Gabungkan
@@ -177,15 +179,15 @@ function scytaleDecrypt(cipherText, key) {
             textLengthCounter++;
         }
     }
-    // return plainText;
-    let plain = "";
-    for (let i = 0; i < plainText.length; i++) {
-        if (plainText[i] !== "Z") {
-            plain += plainText[i];
-        }
-    }
+    return plainText;
+    // let plain = "";
+    // for (let i = 0; i < plainText.length; i++) {
+    //     if (plainText[i] !== "Z") {
+    //         plain += plainText[i];
+    //     }
+    // }
 
-    return plain;
+    // return plain;
 }
 
 function railFenceEncrypt(inputRail, key) {
@@ -225,18 +227,19 @@ function railFenceEncrypt(inputRail, key) {
 }
 
 function railFenceDecrypt(cipher, key) {
-    // create the matrix to cipher plain text key = rows , length(text) = columns
-    // filling the rail matrix to distinguish filled spaces from blank ones
+    // Buat matriks lalu diisi semua diisi  dengan \n
     let rail = new Array(key)
         .fill(null)
         .map(() => new Array(cipher.length).fill("\n"));
 
-    // to find the direction
+    cipher = cipher.split(" ").join("");
+
+    // untuk mengatur arah
     let dir_down = null;
     let row = 0,
         col = 0;
 
-    // mark the places with '*'
+    // Tandai dengan *
     for (let i = 0; i < cipher.length; i++) {
         if (row === 0) {
             dir_down = true;
@@ -257,7 +260,7 @@ function railFenceDecrypt(cipher, key) {
         }
     }
 
-    // now we can construct the fill the rail matrix
+    // Isi matrix
     let index = 0;
     for (let i = 0; i < key; i++) {
         for (let j = 0; j < cipher.length; j++) {
@@ -268,7 +271,7 @@ function railFenceDecrypt(cipher, key) {
         }
     }
 
-    // now read the matrix in zig-zag manner to construct the resultant text
+    // Baca matrix
     let result = [];
     (row = 0), (col = 0);
     for (let i = 0; i < cipher.length; i++) {
@@ -309,8 +312,13 @@ function superEncrypt(plaintext, shift, rail, key) {
 function superDecrypt(ciphertext, shift, rail, key) {
     ciphertext = ciphertext.split(" ").join("");
 
-    return caesarCipher(
-        scytaleDecrypt(railFenceDecrypt(ciphertext, rail), key),
-        -shift
-    );
+    let temp = scytaleDecrypt(railFenceDecrypt(ciphertext, rail), key);
+    let cip = "";
+    for (let i = 0; i < temp.length; i++) {
+        if (temp[i] !== "Z") {
+            cip += temp[i];
+        }
+    }
+
+    return caesarCipher(cip, -shift);
 }
