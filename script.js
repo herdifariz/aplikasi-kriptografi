@@ -77,48 +77,40 @@ function decryptSuper() {
 
 function caesarCipher(str, shift) {
     let output = "";
-
     // Looping tiap char
     for (let i = 0; i < str.length; i++) {
-        // Ambil tiap char
         let c = str[i];
-
-        // Jika merupakan huruf
+        // Jika c merupakan huruf
         if (/[a-z]/i.test(c)) {
-            // Ambil code ASCII
             let code = str.charCodeAt(i);
-
-            // Cek huruf kecil / besar
+            // Cek off set untuk huruf kecil / besar
             const offset = c.toLowerCase() === c ? 97 : 65;
-
             // Ubah huruf
             c = String.fromCharCode(
                 ((((code - offset + shift) % 26) + 26) % 26) + offset
             );
         }
-
         // Gabungkan
         output += c;
     }
-
-    // Done
     return output;
 }
 
 function scytaleEncrypt(plaintext, key) {
+    // Periksa apakah kunci valid
     if (key <= 0 || key > plaintext.length) {
         console.error("Invalid key");
         return "";
     }
-
+    // Hilangkan spasi dari teks
     plaintext = plaintext.split(" ").join("");
-
+    // Inisialisasi matriks untuk menyusun teks
     let tabel = new Array(Math.ceil(plaintext.length / key))
         .fill(null)
         .map(() => new Array(key).fill(0));
 
     let textLengthCounter = 0;
-
+    // Susun teks masukan ke dalam matriks sesuai dengan pola
     for (let i = 0; i < Math.ceil(plaintext.length / key); i++) {
         for (let j = 0; j < key; j++) {
             if (textLengthCounter === plaintext.length) {
@@ -132,7 +124,7 @@ function scytaleEncrypt(plaintext, key) {
 
     textLengthCounter = 0;
     let ciphertext = "";
-
+    // Baca matriks untuk menghasilkan ciphertext
     for (let i = 0; i < key; i++) {
         for (let j = 0; j < Math.ceil(plaintext.length / key); j++) {
             if (tabel[j][i] === 0) {
@@ -146,20 +138,20 @@ function scytaleEncrypt(plaintext, key) {
 }
 
 function scytaleDecrypt(cipherText, key) {
-    // Validasi key agar tidak melebihi panjang teks
+    // Periksa apakah kunci valid
     if (key <= 0 || key > cipherText.length) {
         console.error("Invalid key");
         return "";
     }
-
+    // Hilangkan spasi dari teks
     cipherText = cipherText.split(" ").join("");
-
+    // Inisialisasi matriks untuk menyusun ciphertext
     let tabel = new Array(Math.ceil(cipherText.length / key))
         .fill(null)
         .map(() => new Array(key));
 
     let textLengthCounter = 0;
-
+    // Susun ciphertext ke dalam matriks sesuai pola
     for (let i = 0; i < key; i++) {
         for (let j = 0; j < Math.ceil(cipherText.length / key); j++) {
             tabel[j][i] = cipherText.charAt(textLengthCounter);
@@ -172,7 +164,7 @@ function scytaleDecrypt(cipherText, key) {
 
     textLengthCounter = 0;
     let plainText = "";
-
+    // Baca matriks untuk menghasilkan plaintext
     for (let i = 0; i < Math.ceil(cipherText.length / key); i++) {
         for (let j = 0; j < key; j++) {
             plainText += tabel[i][j];
@@ -180,44 +172,42 @@ function scytaleDecrypt(cipherText, key) {
         }
     }
     return plainText;
-    // let plain = "";
-    // for (let i = 0; i < plainText.length; i++) {
-    //     if (plainText[i] !== "Z") {
-    //         plain += plainText[i];
-    //     }
-    // }
-
-    // return plain;
 }
 
+// let plain = "";
+// for (let i = 0; i < plainText.length; i++) {
+//     if (plainText[i] !== "Z") {
+//         plain += plainText[i];
+//     }
+// }
+
+// return plain;
+
+// key = baris , text.length = kolom
 function railFenceEncrypt(inputRail, key) {
-    // hapus spasi
+    // Hilangkan spasi dari teks
     let text = inputRail.split(" ").join("");
 
-    // Buat matrix
-    // key = baris , text.length = kolom
+    // Inisialisasi matriks untuk menyusun plaintext
     let rail = new Array(key)
         .fill()
         .map(() => new Array(text.length).fill("\n"));
 
-    // Isi matrix
     let dir_down = false;
     let row = 0,
         col = 0;
 
+    // Isi matriks dengan karakter-karakter dari plaintext
     for (let i = 0; i < text.length; i++) {
-        // Cek arah ke atas/bawah
-        // Balik arah jika mencapai baris paling atas/bawah
+        // Cek arah ke atas/bawah, Balik arah jika mencapai baris paling atas/bawah
         if (row == 0 || row == key - 1) dir_down = !dir_down;
-
         // Isi matrix sesuai huruf
         rail[row][col++] = text[i];
-
-        // Uabh ke abris selanjutnya
+        // Pergi ke baris selanjutnya
         dir_down ? row++ : row--;
     }
 
-    // Pembacaan hasil matrix
+    // Baca matriks untuk menghasilkan ciphertext
     let result = "";
     for (let i = 0; i < key; i++)
         for (let j = 0; j < text.length; j++)
@@ -226,33 +216,30 @@ function railFenceEncrypt(inputRail, key) {
     return result;
 }
 
-function railFenceDecrypt(cipher, key) {
-    // Buat matriks lalu diisi semua diisi  dengan \n
+function railFenceDecrypt(inputRail, key) {
+    // Hilangkan spasi dari teks
+    let cipher = inputRail.split(" ").join("");
+
+    // Inisialisasi matriks lalu diisi dengan karakter \n
     let rail = new Array(key)
         .fill(null)
         .map(() => new Array(cipher.length).fill("\n"));
 
-    cipher = cipher.split(" ").join("");
-
-    // untuk mengatur arah
     let dir_down = null;
     let row = 0,
         col = 0;
 
-    // Tandai dengan *
+    // Beri tanda '*' untuk mengindikasikan posisi karakter ciphertext
     for (let i = 0; i < cipher.length; i++) {
         if (row === 0) {
             dir_down = true;
-        }
-        if (row === key - 1) {
+        } else if (row === key - 1) {
             dir_down = false;
         }
-
-        // place the marker
+        // Beri tanda
         rail[row][col] = "*";
         col++;
-
-        // find the next row using direction flag
+        // Pergi ke baris selanjutnya
         if (dir_down) {
             row++;
         } else {
@@ -260,7 +247,7 @@ function railFenceDecrypt(cipher, key) {
         }
     }
 
-    // Isi matrix
+    // Isi matrix dengan karakter ciphertext pada yang sudah diberi tanda *
     let index = 0;
     for (let i = 0; i < key; i++) {
         for (let j = 0; j < cipher.length; j++) {
@@ -271,11 +258,10 @@ function railFenceDecrypt(cipher, key) {
         }
     }
 
-    // Baca matrix
+    // Baca matrix untuk menghasilkan plaintext
     let result = [];
     (row = 0), (col = 0);
     for (let i = 0; i < cipher.length; i++) {
-        // check the direction of flow
         if (row === 0) {
             dir_down = true;
         }
@@ -283,13 +269,12 @@ function railFenceDecrypt(cipher, key) {
             dir_down = false;
         }
 
-        // place the marker
+        // Ambil karakter lalu masukkan ke result
         if (rail[row][col] !== "*") {
             result.push(rail[row][col]);
             col++;
         }
 
-        // find the next row using direction flag
         if (dir_down) {
             row++;
         } else {
@@ -300,25 +285,33 @@ function railFenceDecrypt(cipher, key) {
     return result.join("");
 }
 
-function superEncrypt(plaintext, shift, rail, key) {
+function superEncrypt(plaintext, keyCaesar, keyRail, keyScytale) {
     plaintext = plaintext.split(" ").join("");
 
     return railFenceEncrypt(
-        scytaleEncrypt(caesarCipher(plaintext, shift), key),
-        rail
+        scytaleEncrypt(caesarCipher(plaintext, keyCaesar), keyScytale),
+        keyRail
     );
 }
 
-function superDecrypt(ciphertext, shift, rail, key) {
+function superDecrypt(ciphertext, keyCaesar, keyRail, keyScytale) {
     ciphertext = ciphertext.split(" ").join("");
 
-    let temp = scytaleDecrypt(railFenceDecrypt(ciphertext, rail), key);
-    let cip = "";
-    for (let i = 0; i < temp.length; i++) {
-        if (temp[i] !== "Z") {
-            cip += temp[i];
-        }
-    }
-
-    return caesarCipher(cip, -shift);
+    return caesarCipher(
+        scytaleDecrypt(railFenceDecrypt(ciphertext, keyRail), keyScytale),
+        -keyCaesar
+    );
 }
+
+// let temp = scytaleDecrypt(
+//     railFenceDecrypt(ciphertext, keyRail),
+//     keyScytale
+// );
+// let cip = "";
+
+// // Menghilangkan huruf Z dari hasil scytale
+// for (let i = 0; i < temp.length; i++) {
+//     if (temp[i] !== "Z") {
+//         cip += temp[i];
+//     }
+// }
